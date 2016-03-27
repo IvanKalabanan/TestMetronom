@@ -51,7 +51,7 @@ public class MyService extends Service {
                             soundThread.interrupt();
                             sound(time);
                         }
-                    }catch(Exception e){}
+                    }catch (Exception e){e.printStackTrace();}
                     vibro(time);
 
                     break;
@@ -68,7 +68,10 @@ public class MyService extends Service {
                             soundThread.interrupt();
                             sound(time);
                         }
-                    }catch (Exception e){}
+                    }catch (Exception e){e.printStackTrace();}
+                    if(!isCameraUsebyApp()) {
+                        cam = Camera.open();
+                    }
                     flash(time);
                     break;
                 case Code.SoundOn:
@@ -84,23 +87,29 @@ public class MyService extends Service {
                         if (soundThread.isAlive()) {
                             soundThread.interrupt();
                         }
-                    }catch (Exception e){}
+                    }catch (Exception e){e.printStackTrace();}
                     sound(time);
                     break;
                 case Code.VibroOff:
-                    if (vibroThread.isAlive()) {
-                        vibroThread.interrupt();
-                    }
+                    try {
+                        if (vibroThread.isAlive()) {
+                            vibroThread.interrupt();
+                        }
+                    }catch (Exception e){e.printStackTrace();}
                     break;
                 case Code.FlashOff:
+                    try{
                     if (flashThread.isAlive()) {
                         flashThread.interrupt();
                     }
+                    }catch (Exception e){e.printStackTrace();}
                     break;
                 case Code.SoundOff:
+                    try{
                     if (soundThread.isAlive()) {
                         soundThread.interrupt();
                     }
+                    }catch (Exception e){e.printStackTrace();}
                     break;
             }
 
@@ -167,8 +176,9 @@ public class MyService extends Service {
             flashThread.interrupt();
         }
         if (soundThread != null) {
-            soundThread.interrupt();cam.release();
+            soundThread.interrupt();
         }
+        cam.release();
     }
 
     public boolean isCameraUsebyApp() {
@@ -184,7 +194,7 @@ public class MyService extends Service {
     }
 
     public void flash(final int time) {
-        if(isCameraUsebyApp()) {
+
             flashThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -214,7 +224,7 @@ public class MyService extends Service {
             });
 
             flashThread.start();
-        }
+
 
     }
 
